@@ -408,6 +408,7 @@ service lowi-server /system/bin/lowi-server
     user gps
     group gps net_admin wifi inet qcom_diag
 
+
 service charger /sbin/healthd -c
     class charger
     critical
