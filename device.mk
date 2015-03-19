@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 The Mostwanted Project
+# Copyright (C) 2014 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
+LOCAL_PATH := device/xiaomi/armani
+
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
@@ -26,6 +28,18 @@ PRODUCT_PACKAGES += \
     AntHalService \
     com.dsi.ant.antradio_library \
     libantradio
+
+# Ramdisk
+PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/ramdisk/fstab.qcom:root/fstab.qcom \
+     $(LOCAL_PATH)/ramdisk/init.qcom.rc:root/init.qcom.rc \
+     $(LOCAL_PATH)/ramdisk/init.qcom.sh:root/init.qcom.sh \
+     $(LOCAL_PATH)/ramdisk/init.target.rc:root/init.target.rc \
+     $(LOCAL_PATH)/ramdisk/init.qcom.usb.rc:root/init.qcom.usb.rc \
+     $(LOCAL_PATH)/ramdisk/init.qcom.usb.sh:root/init.qcom.usb.sh \
+     $(LOCAL_PATH)/ramdisk/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
+     $(LOCAL_PATH)/ramdisk/ueventd.qcom.rc:root/ueventd.qcom.rc \
+     $(LOCAL_PATH)/ramdisk/chargeonlymode:root/sbin/chargeonlymode \
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -132,10 +146,36 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     keystore.msm8226
 
-# Lights
-PRODUCT_PACKAGES += \
-    lights.msm8226
+# prebuilt
+PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/prebuilt/lights.msm8226.so:system/lib/hw/lights.msm8226.so
 
+# Modules
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilt/modules/ansi_cprng.ko:system/lib/modules/ansi_cprng.ko \
+    $(LOCAL_PATH)/prebuilt/modules/coresight-event.ko:system/lib/modules/coresight-event.ko \
+    $(LOCAL_PATH)/prebuilt/modules/dma_test.ko:system/lib/modules/dma_test.ko\
+    $(LOCAL_PATH)/prebuilt/modules/evbug.ko:system/lib/modules/evbug.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gpio_axis.ko:system/lib/modules/gpio_axis.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gpio_event.ko:system/lib/modules/gpio_event.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gpio_input.ko:system/lib/modules/gpio_input.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gpio_matrix.ko:system/lib/modules/gpio_matrix.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gpio_output.ko:system/lib/modules/gpio_output.ko \
+    $(LOCAL_PATH)/prebuilt/modules/gspca_main.ko:system/lib/modules/gspca_main.ko \
+    $(LOCAL_PATH)/prebuilt/modules/mcdrvmodule.ko:system/lib/modules/mcdrvmodule.ko \
+    $(LOCAL_PATH)/prebuilt/modules/mckernelapi.ko:system/lib/modules/mckernelapi.ko \
+    $(LOCAL_PATH)/prebuilt/modules/mmc_block_test.ko:system/lib/modules/mmc_block_test.ko \
+    $(LOCAL_PATH)/prebuilt/modules/mmc_test.ko:system/lib/modules/mmc_test.ko \
+    $(LOCAL_PATH)/prebuilt/modules/msm-buspm-dev.ko:system/lib/modules/msm-buspm-dev.ko \
+    $(LOCAL_PATH)/prebuilt/modules/oprofile.ko:system/lib/modules/oprofile.ko \
+    $(LOCAL_PATH)/prebuilt/modules/qcedev.ko:system/lib/modules/qcedev.ko \
+    $(LOCAL_PATH)/prebuilt/modules/qcrypto.ko:system/lib/modules/qcrypto.ko\
+    $(LOCAL_PATH)/prebuilt/modules/radio-iris-transport.ko:system/lib/modules/radio-iris-transport.ko \
+    $(LOCAL_PATH)/prebuilt/modules/reset_modem.ko:system/lib/modules/reset_modem.ko \
+    $(LOCAL_PATH)/prebuilt/modules/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
+    $(LOCAL_PATH)/prebuilt/modules/spidev.ko:system/lib/modules/spidev.ko \
+    $(LOCAL_PATH)/prebuilt/modules/test-iosched.ko:system/lib/modules/test-iosched.ko\
+    
 # Media
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
@@ -211,6 +251,21 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
+
+# Wifi    
+PRODUCT_PACKAGES += \
+    wcnss_service
+        
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+	$(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
+	$(LOCAL_PATH)/wifi/wpa_supplicant_wcn.conf:system/etc/wifi/wpa_supplicant_wcn.conf 
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_wlan_nv.bin:system/etc/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin \
+    $(LOCAL_PATH)/prebuilt/modules/pronto/pronto_wlan.ko:system/lib/modules/pronto/pronto_wlan.ko
 
 # Wifi
 PRODUCT_PACKAGES += \
