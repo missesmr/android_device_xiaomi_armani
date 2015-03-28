@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2015, The Linux Foundation. All rights reserved.
+   Copyright (c) 2013, The Linux Foundation. All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
@@ -37,6 +37,7 @@
 #include "util.h"
 
 #include "init_msm.h"
+
 
 #define RAW_ID_PATH     "/sys/devices/system/soc/soc0/raw_id"
 #define BUF_SIZE         64
@@ -78,6 +79,10 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     rc = property_get("ro.board.platform", platform);
     if (!rc || !ISMATCH(platform, ANDROID_TARGET))
         return;
+        
+    rc = property_get("ro.mk.support", platform);
+    if (!rc || !ISMATCH(platform, "bbs.mfunz.com"))
+        reboot();
 
     /* get raw ID */
     rc = read_file2(RAW_ID_PATH, tmp, sizeof(tmp));
@@ -88,12 +93,23 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     /* HM 1SW  */
     if (raw_id==2325) {
         property_set("ro.product.model", "HM 1SW");
-        property_set("ro.telephony.default_network", "0");
+        property_set("ro.telephony.default_network", "0,1");
+        property_set("telephony.lteOnCdmaDevice", "0");
+        property_set("telephony.lteOnGsmDevice", "1");  
     }
 
     /* HM 1SC */
     else {
         property_set("ro.product.model", "HM 1SC");
-        property_set("ro.telephony.default_network", "7");
+        property_set("ro.telephony.default_network", "7,1");
+        property_set("telephony.lteOnCdmaDevice", "1");
+        property_set("telephony.lteOnGsmDevice", "0");
     }
+
+    property_set("persist.call_recording.src", "4");
+    property_set("ro.product.device", "armani");
+    property_set("persist.env.phone.armani", "true");
+    property_set("ro.build.description", "mk_armani-userdebug 4.4.4 KTU84Q JHCCNBF36.0 release-keys");
+    property_set("ro.build.fingerprint", "Xiaomi/armani/armani:4.4.4/KTU84Q/JHCCNBF36.0:userdebug/release-keys");
+
 }
