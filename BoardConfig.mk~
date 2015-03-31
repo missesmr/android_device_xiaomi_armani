@@ -31,7 +31,6 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_MEMCPY_BASE_OPT_DISABLE := true
 TARGET_CPU_VARIANT := krait
 
-
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/xiaomi/armani
 TARGET_KERNEL_CONFIG := cyanogenmod_armani_defconfig
