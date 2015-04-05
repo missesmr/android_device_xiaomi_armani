@@ -22,6 +22,7 @@ TARGET_NO_RADIOIMAGE := true
 # Platform
 TARGET_BOARD_PLATFORM := msm8226
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno305
+TARGET_USE_QCOM_BIONIC_OPTIMIZATION := true
 
 # Architecture
 TARGET_ARCH := arm
@@ -32,9 +33,10 @@ TARGET_CPU_MEMCPY_BASE_OPT_DISABLE := true
 TARGET_CPU_VARIANT := krait
 
 # Kernel
-TARGET_KERNEL_SOURCE := kernel/xiaomi/armani
+#TARGET_KERNEL_SOURCE := kernel/xiaomi/armani
+TARGET_PREBUILT_KERNEL := device/xiaomi/armani/kernel
 TARGET_KERNEL_CONFIG := cyanogenmod_armani_defconfig
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 androidboot.bootdevice=msm_sdcc.1
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 androidboot.bootdevice=msm_sdcc.1 
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
@@ -44,55 +46,80 @@ BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x02000000 -
 # ANT+
 BOARD_ANT_WIRELESS_DEVICE := "qualcomm-smd"
 
-# Encryption
-TARGET_HW_DISK_ENCRYPTION := true
-
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 AUDIO_FEATURE_ENABLED_FM := true
-
-# Init
-TARGET_UNIFIED_DEVICE := true
-TARGET_INIT_VENDOR_LIB := libinit_msm
-TARGET_LIBINIT_DEFINES_FILE := device/xiaomi/armani/init/init_armani.c
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/xiaomi/armani/bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
-QCOM_BT_USE_SMD_TTY := true
-
-# Flags
-COMMON_GLOBAL_CFLAGS += -DNO_SECURE_DISCARD
 
 # Camera
 COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 BOARD_USES_LEGACY_MMAP := true
 
+# Charger
+BOARD_CHARGER_SHOW_PERCENTAGE := true
+
+# Encryption
+TARGET_HW_DISK_ENCRYPTION := true
+
 # Filesystem
 BOARD_BOOTIMAGE_PARTITION_SIZE     := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
 BOARD_SYSTEMIMAGE_PARTITION_SIZE   := 838860800
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 6241095680 
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 6241095680 # 6241112064 - 16384 for crypto footer
 BOARD_CACHEIMAGE_PARTITION_SIZE    := 402653184
 BOARD_PERSISTIMAGE_PARTITION_SIZE  := 33554432
 BOARD_FLASH_BLOCK_SIZE             := 131072
 
+# FM
+TARGET_QCOM_NO_FM_FIRMWARE := true
+
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
 
-# Display
-BOARD_EGL_CFG := device/xiaomi/armani/configs/egl.cfg
-USE_OPENGL_RENDERER := true
+# GPS
+TARGET_GPS_HAL_PATH := device/xiaomi/armani/gps
+TARGET_PROVIDES_GPS_LOC_API := true
+
+# Graphics
+TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
+USE_OPENGL_RENDERER := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+
+# Shader cache config options
+# Maximum size of the GLES Shaders that can be cached for reuse.
+# Increase the size if shaders of size greater than 12KB are used.
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
+
+# Maximum GLES shader cache size for each app to store the compiled shader
+# binaries. Decrease the size if RAM or Flash Storage size is a limitation
+# of the device.
 MAX_EGL_CACHE_SIZE := 2048*1024
 
-# Hardware tunables
+# Fonts
+EXTENDED_FONT_FOOTPRINT := true
+
+# Qualcomm support
+BOARD_USES_QCOM_HARDWARE := true
+
+# Build
+TARGET_SYSTEMIMAGE_USE_SQUISHER := true
+
+# Hardware tunables framework
 BOARD_HARDWARE_CLASS := device/xiaomi/armani/cmhw/
+
+# Init
+TARGET_UNIFIED_DEVICE := true
+TARGET_INIT_VENDOR_LIB := libinit_msm
+TARGET_LIBINIT_DEFINES_FILE := device/xiaomi/armani/init/init_armani.c
 
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
@@ -108,28 +135,16 @@ TARGET_RECOVERY_FSTAB := device/xiaomi/armani/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 COMMON_GLOBAL_CFLAGS += -DNO_SECURE_DISCARD
 
-# jemalloc causes a lot of random crash on free()
-MALLOC_IMPL := dlmalloc
-
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += device/xiaomi/armani/sepolicy
 
+# jemalloc causes a lot of random crash on free()
+MALLOC_IMPL := dlmalloc
+
 # Time services
 BOARD_USES_QC_TIME_SERVICES := true
-
-# Fonts
-EXTENDED_FONT_FOOTPRINT := true
-
-# Qualcomm support
-BOARD_USES_QCOM_HARDWARE := true
-
-# Build
-TARGET_SYSTEMIMAGE_USE_SQUISHER := true
-
-# Hardware tunables framework
-BOARD_HARDWARE_CLASS := device/xiaomi/armani/cmhw/
 
 # Vold
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS := true
@@ -139,6 +154,7 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/f
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
+BOARD_NO_WIFI_HAL := true
 BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_qcwcn
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
@@ -149,8 +165,16 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 TARGET_USES_WCNSS_CTRL := true
 TARGET_USES_QCOM_WCNSS_QMI := true
 
-# Include an expanded selection of fonts
-EXTENDED_FONT_FOOTPRINT := true
+# Enable dex-preoptimization to speed up first boot sequence
+ifeq ($(HOST_OS),linux)
+  ifeq ($(TARGET_BUILD_VARIANT),user)
+    ifeq ($(WITH_DEXPREOPT),)
+      WITH_DEXPREOPT := true
+      WITH_DEXPREOPT_BOOT_IMG_ONLY := false
+    endif
+  endif
+endif
+WITH_DEXPREOPT_BOOT_IMG_ONLY ?= true
 
 # inherit from the proprietary version
 -include vendor/xiaomi/armani/BoardConfigVendor.mk
